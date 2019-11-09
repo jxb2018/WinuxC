@@ -1,19 +1,18 @@
 {
     "version": "0.2.0",
-    "configurations": [   
-
+    "configurations": [
         {
-            "name": "(gdb) Launch",
+            "name": "C/C++",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/main",   //##########
+            "program": "/home/jxb/WinuxC/bin/${fileBasenameNoExtension}",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
+            "cwd": "/home/jxb/WinuxC/bin",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "preLaunchTask": "build", 
+            "preLaunchTask": "g++",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",

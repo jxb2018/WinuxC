@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "/home/jxb/WinuxC"
+		}
+	],
+	"remoteAuthority": "wsl+Ubuntu-18.04",
+	"settings": {
+		"files.associations": {
+			"*.md": "markdown",
+			"iostream": "cpp",
+			"semantic.h": "c"
+		}
+	}
+}

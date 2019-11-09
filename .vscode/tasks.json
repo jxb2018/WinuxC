@@ -1,17 +1,29 @@
-{    
-    "version": "2.0.0",    
-    "tasks": [
-            {            
-            "label": "build",           
-             "type": "shell",            
-             "command": "g++",            
-             "args":[                
-             "-g","main.cpp","-o","main" //############
-              ],            
-             "group": {                
-             "kind": "build",                
-               "isDefault": true
-              }
-            }
-    ]
+{
+    "version": "2.0.0",
+    "command": "g++",
+    "args": [
+        "-g",
+        "${file}",
+        "-o",
+        "/home/jxb/WinuxC/bin/${fileBasenameNoExtension}",
+    ],
+    "problemMatcher": {
+        "owner": "cpp",
+        "fileLocation": [
+            "relative",
+            "${workspaceRoot}"
+        ],
+        "pattern": {
+            "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+            "file": 1,
+            "line": 2,
+            "column": 3,
+            "severity": 4,
+            "message": 5
+        }
+    },
+    "group": {
+        "kind": "build",
+        "isDefault": true
+    }
 }
