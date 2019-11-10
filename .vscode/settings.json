@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "*.md": "markdown",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "string": "cpp"
     }
 }

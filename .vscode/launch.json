@@ -5,6 +5,7 @@
             "name": "C/C++",
             "type": "cppdbg",
             "request": "launch",
+            "preLaunchTask": "g++",
             "program": "/home/jxb/WinuxC/bin/${fileBasenameNoExtension}",
             "args": [],
             "stopAtEntry": false,
@@ -12,7 +13,6 @@
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "preLaunchTask": "g++",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",

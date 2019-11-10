@@ -12,7 +12,8 @@
                 "/usr/include/x86_64-linux-gnu",
                 "/usr/include",
                 "/home/jxb/WinuxC/reference/cit-x86/ass",
-                "/usr/include/c++/7"
+                "/usr/include/c++/7",
+                "${workspaceFolder}/.git"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/g++",
