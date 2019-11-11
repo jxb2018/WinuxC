@@ -3,10 +3,19 @@
 #include<string>
 #include<vector>
 #include<unordered_map>
+#include<list>
 #include"../../header/Tag.h"
 using namespace std;
+//词法记号类
+class Token{
+    public:
+    Tag tag; //词法记号标识
+    string name;//词名
+    Token(Tag tag,string name):tag(tag),name(name){};
+};
 class Compiler{
     private:
+    list<Token *> linkListforLex;
     public:
     void lexical_parse(string filepath);
     void LexErrorProcess(int row,string message);
@@ -15,13 +24,6 @@ void Compiler::LexErrorProcess(int row,string messages){
     cout<<"***错误***:"<<messages<<",错误产生于第"<<row<<"行"<<"。"<<endl;
     exit(0);
 }
-//词法记号类
-class Token{
-    public:
-    Tag tag; //词法记号标识
-    string name;//词名
-    Token(Tag tag,string name):tag(tag),name(name){};
-};
 static Tag getKwTag(string str){
     static unordered_map<string, Tag> KwTable;
     KwTable["int"] = KW_INT;
@@ -66,7 +68,8 @@ void Compiler::lexical_parse(string filepath){
             //判断是不是关键字
             tag = getKwTag(name);
             token = (tag == ID) ? new Token(ID,name):new Token(tag,name);
-            cout<<'('<<token->tag<<','<<token->name<<')'<<endl;
+            //cout<<'('<<token->tag<<','<<token->name<<')'<<endl;
+            linkListforLex.push_back(token);
         }else{
             if(ch >= '0' && ch <= '9'){ //检测是否是整数，只识别十进制整数
                 name = "";
@@ -81,7 +84,8 @@ void Compiler::lexical_parse(string filepath){
                 3.非正常 遇到字母、_、
                 */
                 token = new Token(NUM,name);
-                cout<<'('<<token->tag<<','<<token->name<<')'<<endl;
+                //cout<<'('<<token->tag<<','<<token->name<<')'<<endl;
+                linkListforLex.push_back(token);
             }else{
                 //检测是否是字符类型
                 if(ch == '\''){
@@ -104,7 +108,8 @@ void Compiler::lexical_parse(string filepath){
                             LexErrorProcess(row,"缺失右单引号或者引号内为空");
                         }
                     }
-                    cout<<'('<<token->tag<<','<<token->name<<')'<<endl;
+                    //cout<<'('<<token->tag<<','<<token->name<<')'<<endl;
+                    linkListforLex.push_back(token);
                 }else if(ch == '"'){
                     name = "";
                     inputFile.get(ch);
@@ -118,7 +123,8 @@ void Compiler::lexical_parse(string filepath){
                         token = new Token(ERR,name);
                         LexErrorProcess(row,"缺失右双引号");
                     }
-                    cout<<'('<<token->tag<<','<<token->name<<')'<<endl;
+                    //cout<<'('<<token->tag<<','<<token->name<<')'<<endl;
+                    linkListforLex.push_back(token);
                 }else{
                     name = "";
                     name.push_back(ch);
@@ -163,7 +169,8 @@ void Compiler::lexical_parse(string filepath){
                             break;
                              
                     }
-                    cout<<'('<<token->tag<<','<<token->name<<')'<<endl;
+                    //cout<<'('<<token->tag<<','<<token->name<<')'<<endl;
+                    linkListforLex.push_back(token);
                 }
             }
 
