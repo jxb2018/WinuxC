@@ -9,7 +9,12 @@ class Compiler{
     private:
     public:
     void lexical_parse(string filepath);
+    void LexErrorProcess(int row,string message);
 };
+void Compiler::LexErrorProcess(int row,string messages){
+    cout<<"***错误***:"<<messages<<",错误产生于第"<<row<<"行"<<"。"<<endl;
+    exit(0);
+}
 //词法记号类
 class Token{
     public:
@@ -35,20 +40,21 @@ void Compiler::lexical_parse(string filepath){
     Tag tag;
     string name;
     Token *token;
-    int row = 1,col = 1;//行号
+    int row = 1;//行号
     inputFile.open(filepath,ios::in|ios::binary);
     if(!inputFile){                                         //判断输入文件是否存在
-        cout<<"***错误:无法打开文件或者文件不存在!"<<endl;   
+        cout<<"***错误***:无法打开文件或者文件不存在!"<<endl;   
         exit(0);
     }
    
-    while(true){       
+    while(true){
+        if(ch == '\n'){ row++;} //记录读取的位置       
         inputFile.get(ch);
         if(inputFile.eof()) break;
-        col++;
-        if(ch == '\n'){ row++; col=1;} //记录读取的位置
+        if(ch == '\n'){ row++;} //记录读取的位置
         while(ch == ' ' || ch == 10 || ch == 13 || ch == 9){ //忽略空格、换行、回车、Tab
-             inputFile.get(ch);
+             inputFile.get(ch); 
+             if(inputFile.eof()) break;
         }
         if(inputFile.eof()) break;
         if((ch>='a'&&ch<='z') || ch=='_' || (ch>='A'&&ch<='Z')){//判断是不是标记符或者关键字
@@ -77,7 +83,7 @@ void Compiler::lexical_parse(string filepath){
                 token = new Token(NUM,name);
                 cout<<'('<<token->tag<<','<<token->name<<')'<<endl;
             }else{
-                //检测是否是字符类型 (暂时忽略转义字符)
+                //检测是否是字符类型
                 if(ch == '\''){
                     name = "";
                     inputFile.get(ch);
@@ -88,10 +94,76 @@ void Compiler::lexical_parse(string filepath){
                     if(!(inputFile.eof())&& (ch == '\'') && (name.length()==1)){
                         token = new Token(CH,name);
                     }else{
-                        token = new Token(ERR,name);
+                        if(!(inputFile.eof())&& (ch == '\'') && (name.length()==2) ){
+                            if(name[0] == '\\' && name[1] == 'n')
+                                token = new Token(CH,"\n");
+                            if(name[0] == '\\' && name[1] == 't')
+                                token = new Token(CH,"\t");
+                        }else{
+                            token = new Token(ERR,name);
+                            LexErrorProcess(row,"缺失右单引号或者引号内为空");
+                        }
                     }
                     cout<<'('<<token->tag<<','<<token->name<<')'<<endl;
-
+                }else if(ch == '"'){
+                    name = "";
+                    inputFile.get(ch);
+                    do{
+                        name.push_back(ch);
+                        inputFile.get(ch);
+                    }while((ch != '"')&&(!inputFile.eof()));
+                    if(!(inputFile.eof()) && (ch == '"')){
+                        token = new Token(STR,name);
+                    }else{
+                        token = new Token(ERR,name);
+                        LexErrorProcess(row,"缺失右双引号");
+                    }
+                    cout<<'('<<token->tag<<','<<token->name<<')'<<endl;
+                }else{
+                    name = "";
+                    name.push_back(ch);
+                    switch(ch){
+                        case '=':
+                            token = new Token(EQU,name);break;           
+                        case '+':
+                            token = new Token(ADD,name);break;
+                        case '-':
+                            token = new Token(SUB,name);break; 
+                        case '*':
+                            token = new Token(MUL,name);break;
+                        case '\\':
+                            token = new Token(DIV,name);break;
+                        case '%':
+                            token = new Token(MOD,name);break;
+                        case '<':
+                            token = new Token(LANGLEBRACKET,name);break;
+                        case '>':
+                            token = new Token(RANGLEBRACKET,name);break;
+                        case '(':
+                            token = new Token(LPAREN,name);break;
+                        case ')':
+                            token = new Token(RPAREN,name);break;
+                        case '[':
+                            token = new Token(LBRACK,name);break;
+                        case ']':
+                            token = new Token(RBRACK,name);break;
+                        case '{':
+                            token = new Token(LBRACE,name);break;
+                        case '}':
+                            token = new Token(RBRACE,name);break;  
+                        case ',':
+                            token = new Token(COMMA,name);break;
+                        case ':':
+                            token = new Token(COLON,name);break;
+                        case ';':
+                            token = new Token(SEMCOLON,name);break;
+                        default:
+                            token = new Token(ERR,name);
+                            LexErrorProcess(row,"非法符号");
+                            break;
+                             
+                    }
+                    cout<<'('<<token->tag<<','<<token->name<<')'<<endl;
                 }
             }
 
