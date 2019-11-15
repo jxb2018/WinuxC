@@ -19,7 +19,13 @@ class Compiler{
     public:
     void lexical_parse(string filepath);
     void LexErrorProcess(int row,string message);
+    void showList();
 };
+void Compiler::showList(){
+    for(auto token : linkListforLex){
+        cout<<"("<<token->tag<<","<<token->name<<")"<<endl;
+    }
+}
 void Compiler::LexErrorProcess(int row,string messages){
     cout<<"***错误***:"<<messages<<",错误产生于第"<<row<<"行"<<"。"<<endl;
     exit(0);
@@ -48,10 +54,8 @@ void Compiler::lexical_parse(string filepath){
         cout<<"***错误***:无法打开文件或者文件不存在!"<<endl;   
         exit(0);
     }
-   
-    while(true){
-        if(ch == '\n'){ row++;} //记录读取的位置       
-        inputFile.get(ch);
+    inputFile.get(ch);//读取第一个字符
+    while(true){   
         if(inputFile.eof()) break;
         if(ch == '\n'){ row++;} //记录读取的位置
         while(ch == ' ' || ch == 10 || ch == 13 || ch == 9){ //忽略空格、换行、回车、Tab
@@ -110,6 +114,7 @@ void Compiler::lexical_parse(string filepath){
                     }
                     //cout<<'('<<token->tag<<','<<token->name<<')'<<endl;
                     linkListforLex.push_back(token);
+                    inputFile.get(ch);
                 }else if(ch == '"'){
                     name = "";
                     inputFile.get(ch);
@@ -125,6 +130,7 @@ void Compiler::lexical_parse(string filepath){
                     }
                     //cout<<'('<<token->tag<<','<<token->name<<')'<<endl;
                     linkListforLex.push_back(token);
+                    inputFile.get(ch);
                 }else{
                     name = "";
                     name.push_back(ch);
@@ -171,6 +177,7 @@ void Compiler::lexical_parse(string filepath){
                     }
                     //cout<<'('<<token->tag<<','<<token->name<<')'<<endl;
                     linkListforLex.push_back(token);
+                    inputFile.get(ch);
                 }
             }
 
@@ -181,8 +188,7 @@ void Compiler::lexical_parse(string filepath){
 }
 int main(){
     Compiler c;
-    c.lexical_parse("../raw/hello.c");
-    //KeyWord kw;
-    //cout<<kw.getKwTag("int")<<endl;
+    c.lexical_parse("/home/jxb/WinuxC/raw/hello.c");
+    c.showList();
     return 0;
 }
